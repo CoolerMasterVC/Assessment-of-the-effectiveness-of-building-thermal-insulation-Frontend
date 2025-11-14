@@ -1,0 +1,11 @@
+/* src/components/LoadingSpinner.css */
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.loading-content {
+  text-align: center;
+}
