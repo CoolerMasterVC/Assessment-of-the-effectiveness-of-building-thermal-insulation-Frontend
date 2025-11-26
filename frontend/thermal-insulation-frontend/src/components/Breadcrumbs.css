@@ -1,0 +1,26 @@
+/* src/components/Breadcrumbs.css */
+.breadcrumb {
+  background: transparent;
+  margin-bottom: 0;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.breadcrumb-item {
+  font-size: 0.9rem;
+}
+
+.breadcrumb-item.active {
+  color: #6c757d;
+}
+
+.breadcrumb-item a {
+  color: #ffc107;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.breadcrumb-item a:hover {
+  color: #e0a800;
+  text-decoration: underline;
+}

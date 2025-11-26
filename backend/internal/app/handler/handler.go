@@ -30,8 +30,8 @@ func NewHandler(r *repository.Repository, cfg *config.Config, redisClient *redis
 }
 
 func (h *Handler) RegisterHandler(router *gin.Engine) {
-	// Глобальный middleware для аутентификации
-	router.Use(h.AuthMiddleware())
+	// УБРАТЬ глобальный AuthMiddleware отсюда
+	// router.Use(h.AuthMiddleware())
 
 	h.RegisterTemplates(router)
 	h.RegisterStatic(router)
@@ -48,32 +48,31 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 
 	api := router.Group("/api")
 
-	// Публичные маршруты (доступны всем)
+	// Публичные маршруты (доступны всем) - БЕЗ аутентификации
 	public := api.Group("")
 	{
-		// Аутентификация (доступна только гостям)
+		// Эти роуты НЕ требуют токена
 		public.POST("/users/register", h.Register)
 		public.POST("/users/login", h.Login)
-		// Просмотр материалов (доступен всем)
 		public.GET("/materials", h.GetMaterials)
 		public.GET("/materials/:id", h.GetMaterial)
-		// Корзина (доступна всем, но для гостя возвращает 0,0)
 		public.GET("/applications/cart", h.GetCartInfo)
 	}
 
-	// Защищенные маршруты (требуют аутентификации)
+	// Защищенные маршруты (требуют аутентификации) - С аутентификацией
 	protected := api.Group("")
-	protected.Use(h.RequireAuth())
+	protected.Use(h.AuthMiddleware()) // Проверяем токен
+	protected.Use(h.RequireAuth())    // Требуем аутентификации
 	{
 		// Пользовательские маршруты
 		users := protected.Group("/users")
 		{
-			users.GET("/me", h.GetCurrentUser)
-			users.PUT("/me", h.UpdateCurrentUser)
-			users.POST("/logout", h.Logout)
+			users.GET("/me", h.GetCurrentUser)    // Требует токен
+			users.PUT("/me", h.UpdateCurrentUser) // Требует токен
+			users.POST("/logout", h.Logout)       // Требует токен
 		}
 
-		// Маршруты заявок (для всех аутентифицированных)
+		// Маршруты заявок
 		applications := protected.Group("/applications")
 		{
 			applications.GET("", h.GetApplications)
@@ -89,7 +88,7 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 			}
 		}
 
-		// Маршруты материалов (чтение для всех, изменение для модераторов)
+		// Маршруты материалов (изменение)
 		materials := protected.Group("/materials")
 		{
 			materials.POST("", h.RequireModerator(), h.CreateMaterial)
@@ -108,12 +107,16 @@ func (h *Handler) RegisterHandler(router *gin.Engine) {
 		}
 	}
 
-	// HTML маршруты
-	router.GET("/", h.IndexHandler)
-	router.GET("/material/:id", h.MaterialHandler)
-	router.GET("/materials_aplication/:id", h.ApplicationHandler)
-	router.POST("/materials_aplication/:id/delete", h.DeleteApplicationHandler)
-	router.POST("/material/:id/add", h.AddMaterialToApplicationHandler)
+	// HTML маршруты - тоже защищаем если нужно
+	html := router.Group("")
+	html.Use(h.AuthMiddleware()) // Для HTML тоже применяем auth
+	{
+		router.GET("/", h.IndexHandler)
+		router.GET("/material/:id", h.MaterialHandler)
+		router.GET("/materials_aplication/:id", h.ApplicationHandler)
+		router.POST("/materials_aplication/:id/delete", h.DeleteApplicationHandler)
+		router.POST("/material/:id/add", h.AddMaterialToApplicationHandler)
+	}
 
 	router.NoRoute(h.NotFoundHandler)
 }
