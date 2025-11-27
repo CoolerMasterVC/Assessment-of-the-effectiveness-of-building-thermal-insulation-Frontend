@@ -27,7 +27,7 @@ export default defineConfig({
       }
     })
   ],
-  base: '/thermal-insulation-frontend/', // ДОЛЖЕН БЫТЬ ТАКИМ
+  base: '/Assessment-of-the-effectiveness-of-building-thermal-insulation-Frontend/', // ДОЛЖЕН БЫТЬ ТАКИМ
   server: {
     port: 3000,
     proxy: {
