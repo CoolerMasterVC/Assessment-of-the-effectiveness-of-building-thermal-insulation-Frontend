@@ -1,27 +1,51 @@
 // src/components/SearchFilter.tsx
-import { type FC, useState } from 'react';
+import { type FC, useState, useEffect } from 'react';
 import { Form, InputGroup, Button } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchTerm } from '../store/slices/materialsFilterSlice';
+import type { RootState } from '../store';
 import './SearchFilter.css';
 
 interface SearchFilterProps {
   onSearch: (searchTerm: string) => void;
   placeholder?: string;
+  initialValue?: string;
 }
 
 export const SearchFilter: FC<SearchFilterProps> = ({ 
   onSearch, 
-  placeholder = "Поиск материалов..." 
+  placeholder = "Поиск материалов...",
+  initialValue = ""
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const searchTerm = useSelector((state: RootState) => state.materialsFilter.searchTerm);
+  const dispatch = useDispatch();
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm || initialValue);
+
+  // Синхронизируем локальное состояние с Redux
+  useEffect(() => {
+    setLocalSearchTerm(searchTerm);
+  }, [searchTerm]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(searchTerm);
+    dispatch(setSearchTerm(localSearchTerm));
+    onSearch(localSearchTerm);
   };
 
   const handleClear = () => {
-    setSearchTerm('');
+    setLocalSearchTerm('');
+    dispatch(setSearchTerm(''));
     onSearch('');
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setLocalSearchTerm(value);
+    // Если поле очищено, сразу обновляем фильтр
+    if (value === '') {
+      dispatch(setSearchTerm(''));
+      onSearch('');
+    }
   };
 
   return (
@@ -30,11 +54,11 @@ export const SearchFilter: FC<SearchFilterProps> = ({
         <Form.Control
           type="text"
           placeholder={placeholder}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={localSearchTerm}
+          onChange={handleChange}
           className="search-input"
         />
-        {searchTerm && (
+        {localSearchTerm && (
           <Button 
             variant="outline-secondary" 
             onClick={handleClear}

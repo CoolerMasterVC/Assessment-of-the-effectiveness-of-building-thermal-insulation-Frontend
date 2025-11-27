@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage';
 import { MaterialsPage } from './pages/MaterialsPage';
 import { MaterialDetailPage } from './pages/MaterialDetailPage';
 import { ROUTES } from './Routes';
+import { PWAInstaller } from './components/PWAInstaller';
 import './App.css';
 
 const App: FC = () => {

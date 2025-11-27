@@ -1,11 +1,14 @@
+// src/pages/MaterialsPage.tsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { materialsApi } from '../modules/api';
 import type { Material } from '../types';
-import { ROUTES } from '../Routes';
 import { SearchFilter } from '../components/SearchFilter';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Breadcrumbs } from '../components/Breadcrumbs';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchTerm } from '../store/slices/materialsFilterSlice';
+import type { RootState } from '../store';
 import './MaterialsPage.css';
 
 export const MaterialsPage = () => {
@@ -13,6 +16,11 @@ export const MaterialsPage = () => {
   const [filteredMaterials, setFilteredMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState(true);
   const [apiStatus, setApiStatus] = useState<'checking' | 'success' | 'error' | 'mock'>('checking');
+  const [cartInfo, setCartInfo] = useState<{ items_count: number } | null>(null);
+  const [cartError, setCartError] = useState<string>('');
+
+  const searchTerm = useSelector((state: RootState) => state.materialsFilter.searchTerm);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const loadMaterials = async () => {
@@ -42,7 +50,31 @@ export const MaterialsPage = () => {
     loadMaterials();
   }, []);
 
+  // Загружаем информацию о корзине
+  useEffect(() => {
+    const loadCartInfo = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/mat_applics/cart');
+        if (response.ok) {
+          const data = await response.json();
+          setCartInfo(data);
+        } else if (response.status === 401) {
+          setCartError('Пользователь не авторизован');
+          setCartInfo({ items_count: 0 });
+        }
+      } catch (error) {
+        console.error('Error loading cart info:', error);
+        setCartError('Ошибка загрузки корзины');
+        setCartInfo({ items_count: 0 });
+      }
+    };
+
+    loadCartInfo();
+  }, []);
+
   const handleSearch = (searchTerm: string) => {
+    dispatch(setSearchTerm(searchTerm));
+    
     if (!searchTerm.trim()) {
       setFilteredMaterials(materials);
       return;
@@ -72,18 +104,57 @@ export const MaterialsPage = () => {
 
       <div className="container">
         <div className="page-header">
-          <h1 className="page-title">Теплоизоляционные материалы</h1>
+          <div className="header-content">
+            <h1 className="page-title">Теплоизоляционные материалы</h1>
+            <p className="page-subtitle">
+              Подбор оптимальных теплоизоляционных материалов для ваших задач
+            </p>
+          </div>
+          
+          {/* Иконка корзины */}
+          <div className="cart-section">
+            <Link to="/cart" className="cart-icon">
+              <div className="cart-icon-wrapper">
+                <img 
+                  src="http://localhost:9000/images/cart.png" 
+                  alt="Корзина" 
+                  className="cart-image"
+                />
+                {cartInfo && cartInfo.items_count > 0 && (
+                  <span className="cart-badge">{cartInfo.items_count}</span>
+                )}
+              </div>
+              <span className="cart-label">Корзина</span>
+            </Link>
+            {cartError && (
+              <div className="cart-error text-muted small mt-1">
+                {cartError}
+              </div>
+            )}
+          </div>
         </div>
-        
-        <p className="page-subtitle">
-          Подбор оптимальных теплоизоляционных материалов для ваших задач
-        </p>
 
         {/* Заменяем простое поле ввода на компонент SearchFilter */}
         <SearchFilter 
           onSearch={handleSearch}
           placeholder="Поиск по названию или описанию..."
+          initialValue={searchTerm}
         />
+
+        {/* Статус API */}
+        <div className="api-status-section mb-4">
+          <div className={`api-status-badge ${apiStatus}`}>
+            {apiStatus === 'checking' && 'Проверка подключения...'}
+            {apiStatus === 'success' && '✓ Подключено к API'}
+            {apiStatus === 'mock' && '⚠ Используются mock-данные'}
+            {apiStatus === 'error' && '✗ Ошибка подключения'}
+          </div>
+          {apiStatus === 'mock' && (
+            <div className="api-status text-muted small mt-1">
+              Сервер недоступен, показаны демо-данные
+            </div>
+          )}
+        </div>
 
         <div className="materials-grid">
           {filteredMaterials.map((material) => (
@@ -94,6 +165,7 @@ export const MaterialsPage = () => {
                   alt={material.name}
                   className="material-image"
                 />
+                <div className="material-id">#{material.id}</div>
               </div>
               <div className="material-content">
                 <h3 className="material-name">{material.name}</h3>

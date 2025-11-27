@@ -104,3 +104,43 @@
   gap: 1rem;
   flex-wrap: wrap;
 }
+
+/* Добавьте в конец MaterialDetailPage.css */
+/* Адаптивность для MaterialDetailPage */
+@media (max-width: 768px) {
+  .material-detail-page .row {
+    flex-direction: column;
+  }
+  
+  .material-detail-image {
+    height: 300px;
+  }
+  
+  .material-title {
+    font-size: 1.5rem;
+  }
+  
+  .material-description {
+    font-size: 1rem;
+  }
+  
+  .material-properties-detail {
+    padding: 1rem;
+  }
+  
+  .property-detail {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .material-detail-image {
+    height: 250px;
+  }
+  
+  .material-info {
+    padding: 1rem;
+  }
+}
