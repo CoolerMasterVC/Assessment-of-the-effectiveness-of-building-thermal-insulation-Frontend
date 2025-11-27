@@ -8,13 +8,9 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
-      },
       manifest: {
         name: 'Теплоизоляционные материалы',
         short_name: 'Теплоизоляция',
-        description: 'Приложение для расчета эффективности теплоизоляционных материалов',
         theme_color: '#ffc107',
         icons: [
           {
@@ -31,6 +27,7 @@ export default defineConfig({
       }
     })
   ],
+  base: '/thermal-insulation-frontend/', // ДОЛЖЕН БЫТЬ ТАКИМ
   server: {
     port: 3000,
     proxy: {
@@ -40,5 +37,4 @@ export default defineConfig({
       },
     },
   },
-  base: '/thermal-insulation-frontend/', // для GitHub Pages
 })
