@@ -2,7 +2,7 @@
 name = "thermal-insulation-app"
 version = "0.1.0"
 description = "Теплоизоляционные материалы"
-authors = ["Name"]
+authors = ["CoolerMasterVC"]
 license = "MIT"
 edition = "2021"
 
@@ -11,11 +11,7 @@ name = "thermal-insulation-app"
 path = "src/main.rs"
 
 [dependencies]
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-tauri = { version = "1.0", features = ["api-all"] }
-reqwest = { version = "0.11", features = ["json"] }
-tokio = { version = "1.0", features = ["full"] }
+tauri = { version = "1.0", features = [ "http-request"] }
 
 [build-dependencies]
-tauri-build = { version = "1.0" }
+tauri-build = { version = "1.0", features = [] }

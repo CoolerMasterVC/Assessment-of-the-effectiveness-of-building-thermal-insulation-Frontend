@@ -143,17 +143,17 @@ export const MaterialsPage = () => {
 
         {/* Статус API */}
         <div className="api-status-section mb-4">
-          <div className={`api-status-badge ${apiStatus}`}>
+          {/* <div className={`api-status-badge ${apiStatus}`}>
             {apiStatus === 'checking' && 'Проверка подключения...'}
             {apiStatus === 'success' && '✓ Подключено к API'}
             {apiStatus === 'mock' && '⚠ Используются mock-данные'}
             {apiStatus === 'error' && '✗ Ошибка подключения'}
-          </div>
-          {apiStatus === 'mock' && (
+          </div> */}
+          {/* {apiStatus === 'mock' && (
             <div className="api-status text-muted small mt-1">
               Сервер недоступен, показаны демо-данные
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="materials-grid">
@@ -165,7 +165,6 @@ export const MaterialsPage = () => {
                   alt={material.name}
                   className="material-image"
                 />
-                <div className="material-id">#{material.id}</div>
               </div>
               <div className="material-content">
                 <h3 className="material-name">{material.name}</h3>

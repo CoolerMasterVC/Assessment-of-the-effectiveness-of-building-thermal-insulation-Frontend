@@ -1,8 +1,7 @@
 // src/pages/HomePage.tsx
 import type { FC } from 'react';
-import { Container, Row, Col, Card, Button, Carousel } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { ROUTES } from '../Routes';
+import { Container, Row, Col, Card, Carousel } from 'react-bootstrap';
+
 import { Breadcrumbs } from '../components/Breadcrumbs';
 
 export const HomePage: FC = () => {
@@ -23,11 +22,6 @@ export const HomePage: FC = () => {
                 Профессиональный расчет теплопотерь и экономии энергии после утепления. 
                 Сравнение различных изоляционных материалов для вашего проекта.
               </p>
-              <Link to={ROUTES.MATERIALS}>
-                <Button variant="dark" size="lg">
-                  Рассчитать экономию
-                </Button>
-              </Link>
             </Col>
           </Row>
         </Container>

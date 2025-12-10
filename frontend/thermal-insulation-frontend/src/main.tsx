@@ -11,7 +11,7 @@ import App from './App.tsx'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter basename="/Assessment-of-the-effectiveness-of-building-thermal-insulation-Frontend/">
         <App />
       </BrowserRouter>
     </Provider>

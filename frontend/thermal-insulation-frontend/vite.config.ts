@@ -6,28 +6,21 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   plugins: [
     react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      manifest: {
-        name: 'Теплоизоляционные материалы',
-        short_name: 'Теплоизоляция',
-        theme_color: '#ffc107',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      }
-    })
+// vite.config.ts
+VitePWA({
+  registerType: 'autoUpdate',
+  manifest: {
+    name: 'Теплоизоляционные материалы',
+    short_name: 'Теплоизоляция', 
+    start_url: '/Assessment-of-the-effectiveness-of-building-thermal-insulation-Frontend/',
+    display: 'standalone',
+    theme_color: '#ffc107',
+    background_color: '#ffffff'
+    // БЕЗ icons!
+  }
+})
   ],
-  base: '/Assessment-of-the-effectiveness-of-building-thermal-insulation-Frontend/', // ДОЛЖЕН БЫТЬ ТАКИМ
+  base: '/Assessment-of-the-effectiveness-of-building-thermal-insulation-Frontend/',
   server: {
     port: 3000,
     proxy: {
