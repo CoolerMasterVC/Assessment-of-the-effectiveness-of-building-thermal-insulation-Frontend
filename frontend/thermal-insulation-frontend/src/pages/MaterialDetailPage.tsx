@@ -1,38 +1,59 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { materialsApi } from '../modules/api';
-import type { Material } from '../types';
-import { ROUTES } from '../Routes';
+import { useAppDispatch, useAppSelector } from '../store';
+import { materialService } from '../services/materialService';
+import { setCurrentMaterial, setLoading, setError } from '../store/slices/materialsSlice';
+import { addMaterialToDraft } from '../store/slices/cartSlice';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Breadcrumbs } from '../components/Breadcrumbs';
+import { ROUTES } from '../Routes';
 import './MaterialDetailPage.css';
 
 export const MaterialDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [material, setMaterial] = useState<Material | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string>('');
+  const [area, setArea] = useState(10);
+  const dispatch = useAppDispatch();
+  
+  const { currentMaterial, loading, error } = useAppSelector((state) => state.materials);
+  const { user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     const loadMaterial = async () => {
       if (!id) return;
       
       try {
-        setLoading(true);
-        setError('');
+        dispatch(setLoading(true));
         const materialId = parseInt(id);
-        const data = await materialsApi.getMaterial(materialId);
-        setMaterial(data);
-      } catch (err) {
-        setError('Материал не найден');
-        console.error('Error loading material:', err);
+        const data = await materialService.getMaterial(materialId);
+        dispatch(setCurrentMaterial(data));
+      } catch (err: any) {
+        dispatch(setError(err.message));
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     };
 
     loadMaterial();
-  }, [id]);
+  }, [id, dispatch]);
+
+  const handleAddToCart = async () => {
+    if (!user) {
+      alert('Для добавления в корзину необходимо войти в систему');
+      return;
+    }
+    
+    if (!id) return;
+    
+    try {
+      await dispatch(addMaterialToDraft({ 
+        materialId: parseInt(id), 
+        area 
+      })).unwrap();
+      alert('Материал добавлен в корзину');
+    } catch (err) {
+      alert('Ошибка при добавлении в корзину');
+    }
+  };
 
   if (loading) {
     return (
@@ -46,7 +67,7 @@ export const MaterialDetailPage = () => {
     );
   }
 
-  if (error || !material) {
+  if (error || !currentMaterial) {
     return (
       <div className="material-detail-page">
         <Breadcrumbs crumbs={[
@@ -56,7 +77,6 @@ export const MaterialDetailPage = () => {
         <div className="container py-5">
           <div className="text-center">
             <h2>{error || 'Материал не найден'}</h2>
-            <p className="text-muted mb-4">Попробуйте вернуться к списку материалов</p>
             <Link to={ROUTES.MATERIALS} className="btn btn-warning">
               Вернуться к материалам
             </Link>
@@ -68,30 +88,27 @@ export const MaterialDetailPage = () => {
 
   return (
     <div className="material-detail-page">
-      {/* Хлебные крошки */}
       <Breadcrumbs crumbs={[
         { label: 'Материалы', path: ROUTES.MATERIALS },
-        { label: material.name }
+        { label: currentMaterial.name }
       ]} />
 
       <div className="container py-4">
         <div className="row">
-          {/* Изображение */}
           <div className="col-md-6 mb-4">
             <div className="material-image-wrapper">
               <img 
-                src={material.image_url}
-                alt={material.name}
+                src={currentMaterial.image_url}
+                alt={currentMaterial.name}
                 className="material-detail-image"
               />
             </div>
           </div>
           
-          {/* Информация */}
           <div className="col-md-6">
             <div className="material-info">
-              <h1 className="material-title">{material.name}</h1>
-              <p className="material-description">{material.description}</p>
+              <h1 className="material-title">{currentMaterial.name}</h1>
+              <p className="material-description">{currentMaterial.description}</p>
               
               <div className="material-properties-detail">
                 <h3 className="properties-title">Характеристики</h3>
@@ -99,34 +116,56 @@ export const MaterialDetailPage = () => {
                 <div className="property-detail">
                   <span className="property-label">Цена за м²:</span>
                   <span className="property-value price-value">
-                    {material.price_per_m2} руб
+                    {currentMaterial.price_per_m2} руб
                   </span>
                 </div>
                 
                 <div className="property-detail">
                   <span className="property-label">Коэффициент теплопроводности (λ):</span>
-                  <span className="property-value">{material.lambda} Вт/(м·K)</span>
+                  <span className="property-value">{currentMaterial.lambda} Вт/(м·K)</span>
                 </div>
                 
                 <div className="property-detail">
                   <span className="property-label">Толщина:</span>
-                  <span className="property-value">{material.thickness} м</span>
+                  <span className="property-value">{currentMaterial.thickness} м</span>
                 </div>
                 
                 <div className="property-detail">
                   <span className="property-label">Статус:</span>
                   <span className="property-value status-value">
-                    {material.status === 'действует' ? 'Доступен' : 'Недоступен'}
+                    {currentMaterial.status === 'действует' ? 'Доступен' : 'Недоступен'}
                   </span>
                 </div>
                 
                 <div className="property-detail">
                   <span className="property-label">Добавлен:</span>
                   <span className="property-value">
-                    {new Date(material.created_at).toLocaleDateString('ru-RU')}
+                    {new Date(currentMaterial.created_at).toLocaleDateString('ru-RU')}
                   </span>
                 </div>
               </div>
+              
+              {user && (
+                <div className="mt-4">
+                  <div className="mb-3">
+                    <label className="form-label">Площадь для утепления (м²):</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      value={area}
+                      onChange={(e) => setArea(parseFloat(e.target.value) || 0)}
+                      min="0.1"
+                      step="0.1"
+                    />
+                  </div>
+                  <button 
+                    className="btn btn-warning w-100"
+                    onClick={handleAddToCart}
+                  >
+                    Добавить в заявку ({area} м²)
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -9,18 +9,29 @@ import { Breadcrumbs } from '../components/Breadcrumbs';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSearchTerm } from '../store/slices/materialsFilterSlice';
 import type { RootState } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
+import { getCartInfo } from '../store/slices/cartSlice';
 import './MaterialsPage.css';
 
 export const MaterialsPage = () => {
+  const dispatch = useAppDispatch();
+  const { itemsCount, draftId } = useAppSelector((state) => state.cart);
+  const { token } = useAppSelector((state) => state.auth);
   const [materials, setMaterials] = useState<Material[]>([]);
   const [filteredMaterials, setFilteredMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState(true);
-  const [apiStatus, setApiStatus] = useState<'checking' | 'success' | 'error' | 'mock'>('checking');
+  const [_, setApiStatus] = useState<'checking' | 'success' | 'error' | 'mock'>('checking');
   const [cartInfo, setCartInfo] = useState<{ items_count: number } | null>(null);
   const [cartError, setCartError] = useState<string>('');
 
   const searchTerm = useSelector((state: RootState) => state.materialsFilter.searchTerm);
-  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Загружаем корзину только если есть токен
+    if (token) {
+      dispatch(getCartInfo());
+    }
+  }, [dispatch, token]);
 
   useEffect(() => {
     const loadMaterials = async () => {
@@ -48,28 +59,6 @@ export const MaterialsPage = () => {
     };
 
     loadMaterials();
-  }, []);
-
-  // Загружаем информацию о корзине
-  useEffect(() => {
-    const loadCartInfo = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/api/mat_applics/cart');
-        if (response.ok) {
-          const data = await response.json();
-          setCartInfo(data);
-        } else if (response.status === 401) {
-          setCartError('Пользователь не авторизован');
-          setCartInfo({ items_count: 0 });
-        }
-      } catch (error) {
-        console.error('Error loading cart info:', error);
-        setCartError('Ошибка загрузки корзины');
-        setCartInfo({ items_count: 0 });
-      }
-    };
-
-    loadCartInfo();
   }, []);
 
   const handleSearch = (searchTerm: string) => {
