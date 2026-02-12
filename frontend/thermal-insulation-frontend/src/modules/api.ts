@@ -9,9 +9,7 @@ const API_BASE = 'http://localhost:8080/api';
 const API_IMAGE_BASE = 'http://localhost:9000/images/default-material.jpg';
 
 // URL для изображений из public папки (если используются mock данные)
-const PUBLIC_IMAGE_BASE = '../../public/default-material.jpg';
-
-const DEFAULT_IMAGE_NAME = 'default-material.jpg';
+const PUBLIC_IMAGE_BASE = 'public/default-material.jpg';
 
 export const materialsApi = {
   getMaterials: async (filters?: MaterialsFilter): Promise<Material[]> => {
