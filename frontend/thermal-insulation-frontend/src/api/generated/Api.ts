@@ -546,7 +546,7 @@ export class Api<SecurityDataType extends unknown> {
       params: RequestParams = {},
     ) =>
       this.http.request<object, object>({
-        path: `/api/applications/${id}/complete`,
+        path: `/api/mat_applics/${id}/complete`,
         method: "PUT",
         secure: true,
         type: ContentType.Json,

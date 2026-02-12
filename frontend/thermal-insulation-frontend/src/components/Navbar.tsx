@@ -59,15 +59,6 @@ export const AppNavbar: FC = () => {
                 <LinkContainer to="/cart">
                   <Nav.Link className="position-relative">
                     Корзина
-                    {itemsCount > 0 && (
-                      <Badge 
-                        bg="danger" 
-                        className="position-absolute top-0 start-100 translate-middle rounded-pill"
-                        style={{ fontSize: '0.6rem' }}
-                      >
-                        {itemsCount}
-                      </Badge>
-                    )}
                   </Nav.Link>
                 </LinkContainer>
                 <NavDropdown title={user.login} id="user-dropdown">

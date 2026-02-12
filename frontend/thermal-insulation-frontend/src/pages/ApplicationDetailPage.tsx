@@ -205,13 +205,13 @@ export const ApplicationDetailPage: FC = () => {
                     {isDraft && isOwner && (
                       <>
                         <Button variant="warning" onClick={handleSubmit}>
-                          📤 Отправить на рассмотрение
+                          Отправить на рассмотрение
                         </Button>
                         <Button 
                           variant="outline-primary" 
                           onClick={() => setShowUpdateModal(true)}
                         >
-                          ✏️ Редактировать
+                          Редактировать
                         </Button>
                       </>
                     )}
@@ -219,17 +219,17 @@ export const ApplicationDetailPage: FC = () => {
                     {isModerator && currentApplication.status === 'сформирован' && (
                       <>
                         <Button variant="success" onClick={handleComplete}>
-                          ✅ Завершить
+                          Завершить
                         </Button>
                         <Button variant="danger" onClick={handleReject}>
-                          ❌ Отклонить
+                          Отклонить
                         </Button>
                       </>
                     )}
                     
                     {isOwner && isDraft && (
                       <Button variant="outline-danger" onClick={() => setShowDeleteModal(true)}>
-                        🗑️ Удалить
+                        Удалить
                       </Button>
                     )}
                   </div>
@@ -237,7 +237,7 @@ export const ApplicationDetailPage: FC = () => {
 
                 <Row className="mt-4">
                   <Col md={6}>
-                    <h5>📋 Информация о заявке</h5>
+                    <h5>Информация о заявке</h5>
                     <Table borderless size="sm">
                       <tbody>
                         <tr>
@@ -264,7 +264,7 @@ export const ApplicationDetailPage: FC = () => {
                     </Table>
                   </Col>
                   <Col md={6}>
-                    <h5>📊 Технические параметры</h5>
+                    <h5>Технические параметры</h5>
                     <Table borderless size="sm">
                       <tbody>
                         <tr>
@@ -300,7 +300,7 @@ export const ApplicationDetailPage: FC = () => {
           <Col>
             <Card>
               <Card.Body>
-                <h4 className="mb-3">📦 Материалы в заявке</h4>
+                <h4 className="mb-3">Материалы в заявке</h4>
                 
                 {currentApplication.materials?.length === 0 ? (
                   <Alert variant="info">

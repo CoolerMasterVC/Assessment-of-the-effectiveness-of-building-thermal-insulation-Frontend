@@ -15,14 +15,13 @@ import './MaterialsPage.css';
 
 export const MaterialsPage = () => {
   const dispatch = useAppDispatch();
+  // Получаем информацию о корзине из Redux
   const { itemsCount, draftId } = useAppSelector((state) => state.cart);
   const { token } = useAppSelector((state) => state.auth);
   const [materials, setMaterials] = useState<Material[]>([]);
   const [filteredMaterials, setFilteredMaterials] = useState<Material[]>([]);
   const [loading, setLoading] = useState(true);
   const [_, setApiStatus] = useState<'checking' | 'success' | 'error' | 'mock'>('checking');
-  const [cartInfo, setCartInfo] = useState<{ items_count: number } | null>(null);
-  const [cartError, setCartError] = useState<string>('');
 
   const searchTerm = useSelector((state: RootState) => state.materialsFilter.searchTerm);
 
@@ -77,6 +76,10 @@ export const MaterialsPage = () => {
     setFilteredMaterials(filtered);
   };
 
+  // Определяем, активна ли корзина
+  const isCartActive = token && draftId; // Корзина активна, если пользователь авторизован И есть черновик
+  const cartItemCount = itemsCount || 0;
+
   if (loading) {
     return (
       <div className="materials-page">
@@ -102,22 +105,48 @@ export const MaterialsPage = () => {
           
           {/* Иконка корзины */}
           <div className="cart-section">
-            <Link to="/cart" className="cart-icon">
-              <div className="cart-icon-wrapper">
-                <img 
-                  src="http://localhost:9000/images/cart.png" 
-                  alt="Корзина" 
-                  className="cart-image"
-                />
-                {cartInfo && cartInfo.items_count > 0 && (
-                  <span className="cart-badge">{cartInfo.items_count}</span>
-                )}
+            {isCartActive ? (
+              // Активная иконка корзины
+              <Link to="/cart" className="cart-icon">
+                <div className="cart-icon-wrapper">
+                  <img 
+                    src="http://localhost:9000/images/cart.png" 
+                    alt="Корзина" 
+                    className="cart-image"
+                  />
+                  {cartItemCount > 0 && (
+                    <span className="cart-badge">{cartItemCount}</span>
+                  )}
+                </div>
+                <span className="cart-label">Корзина</span>
+              </Link>
+            ) : (
+              // Неактивная иконка корзины
+              <div className="cart-icon disabled">
+                <div className="cart-icon-wrapper">
+                  <img 
+                    src="http://localhost:9000/images/cart.png" 
+                    alt="Корзина" 
+                    className="cart-image disabled"
+                    style={{ filter: 'grayscale(100%) opacity(0.6)' }}
+                  />
+                  {cartItemCount > 0 && (
+                    <span className="cart-badge" style={{ backgroundColor: '#6c757d' }}>
+                      {cartItemCount}
+                    </span>
+                  )}
+                </div>
+                <span className="cart-label text-muted">Корзина</span>
               </div>
-              <span className="cart-label">Корзина</span>
-            </Link>
-            {cartError && (
+            )}
+            {!token && (
               <div className="cart-error text-muted small mt-1">
-                {cartError}
+                Войдите, чтобы использовать корзину
+              </div>
+            )}
+            {token && !draftId && (
+              <div className="cart-error text-muted small mt-1">
+                Корзина пуста
               </div>
             )}
           </div>
