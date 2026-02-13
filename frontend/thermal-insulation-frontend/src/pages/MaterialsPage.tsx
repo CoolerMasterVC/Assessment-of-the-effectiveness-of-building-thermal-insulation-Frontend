@@ -112,26 +112,26 @@ export const MaterialsPage = () => {
           </div>
           
           {/* Иконка корзины */}
-          <div className="cart-section">
-            <Link to="/cart" className="cart-icon">
-              <div className="cart-icon-wrapper">
-                <img 
-                  src="http://localhost:9000/images/cart.png" 
-                  alt="Корзина" 
-                  className="cart-image"
-                />
-                {cartInfo && cartInfo.items_count > 0 && (
-                  <span className="cart-badge">{cartInfo.items_count}</span>
-                )}
-              </div>
-              <span className="cart-label">Корзина</span>
-            </Link>
-            {cartError && (
-              <div className="cart-error text-muted small mt-1">
-                {cartError}
-              </div>
-            )}
-          </div>
+<div className="cart-section">
+  <div className="cart-icon disabled"> {/* Убираем Link, используем div */}
+    <div className="cart-icon-wrapper">
+      <img 
+        src="http://localhost:9000/images/cart.png" 
+        alt="Корзина" 
+        className="cart-image disabled" // Добавляем класс disabled
+      />
+      {cartInfo && cartInfo.items_count > 0 && (
+        <span className="cart-badge">{cartInfo.items_count}</span>
+      )}
+    </div>
+    <span className="cart-label disabled">Корзина</span> {/* Добавляем класс disabled */}
+  </div>
+  {cartError && (
+    <div className="cart-error text-muted small mt-1">
+      {cartError}
+    </div>
+  )}
+</div>
         </div>
 
         {/* Заменяем простое поле ввода на компонент SearchFilter */}

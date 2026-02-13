@@ -1,4 +1,21 @@
-/* src/pages/MaterialsPage.css - дополнения */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Адаптивная сетка */
+.materials-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
 .materials-page {
   min-height: 100vh;
   background: #f8f9fa;
@@ -158,9 +175,10 @@
 
 .materials-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  gap: 1rem;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .material-card {
@@ -294,6 +312,104 @@
 .no-results p {
   color: #6c757d;
   font-size: 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .materials-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .materials-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+@media (min-width: 768px) {
+  .search-filter .input-group {
+    flex-direction: row;
+    gap: 0;
+  }
+}
+
+/* src/pages/MaterialsPage.css - добавляем стили для отключенной корзины */
+
+/* Cart Section - отключаем интерактивность */
+.cart-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.cart-icon.disabled {
+  text-decoration: none;
+  color: #6c757d; /* Серый цвет текста */
+  cursor: default; /* Обычный курсор, не указатель */
+  pointer-events: none; /* Отключаем все события мыши */
+  opacity: 0.6; /* Делаем полупрозрачной */
+}
+
+.cart-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.cart-image.disabled {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 2px solid #dee2e6; /* Серая рамка вместо желтой */
+  padding: 8px;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  filter: grayscale(100%); /* Делаем изображение черно-белым */
+  opacity: 0.7; /* Добавляем прозрачность */
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #6c757d; /* Серый цвет бейджа */
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border: 2px solid white;
+}
+
+.cart-label.disabled {
+  font-weight: 500;
+  color: #6c757d; /* Серый цвет текста */
+  font-size: 0.9rem;
+}
+
+.cart-error {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+  .cart-section {
+    order: -1;
+    margin-bottom: 1rem;
+  }
+  
+  .cart-image.disabled {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 /* Адаптивность */
