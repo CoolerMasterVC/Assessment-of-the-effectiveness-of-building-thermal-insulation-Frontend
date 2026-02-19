@@ -2,7 +2,7 @@
   "name": "Теплоизоляционные материалы",
   "short_name": "Теплоизоляция",
   "description": "Расчет эффективности теплоизоляционных материалов",
-  "start_url": "/Assessment-of-the-effectiveness-of-building-thermal-insulation-Frontend/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffc107",
