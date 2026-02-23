@@ -2,7 +2,7 @@ import { type FC, useEffect, useState } from 'react';
 import { Table, Button, Badge, Container, Spinner, Alert, Form, Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
-import { getApplications, setFilters, completeApplication, rejectApplication } from '../store/slices/applicationsSlice';
+import { getApplications, setFilters, completeApplicationAsync, rejectApplication } from '../store/slices/applicationsSlice';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { format } from 'date-fns';
 
@@ -43,12 +43,12 @@ export const ApplicationsPage: FC = () => {
   };
 
   const handleComplete = async (id: number) => {
-    if (window.confirm('Завершить заявку с расчетом экономии?')) {
+    if (window.confirm('Запустить асинхронный расчёт экономии?')) {
       try {
-        await dispatch(completeApplication(id));
-        alert('Расчет запущен. Результаты появятся через 10 секунд.');
+        await dispatch(completeApplicationAsync(id)).unwrap();
+        alert('Расчёт запущен. Результаты появятся через 5–10 секунд.');
       } catch (err) {
-        alert('Ошибка');
+        alert('Ошибка при запуске расчёта');
       }
     }
   };

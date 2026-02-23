@@ -7,6 +7,7 @@ import { addMaterialToDraft } from '../store/slices/cartSlice';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ROUTES } from '../Routes';
+import { RecentlyViewedMaterials } from '../components/RecentlyViewedMaterials';
 import './MaterialDetailPage.css';
 
 export const MaterialDetailPage = () => {
@@ -87,7 +88,7 @@ export const MaterialDetailPage = () => {
   }
 
   return (
-    <div className="material-detail-page">
+    <><div className="material-detail-page">
       <Breadcrumbs crumbs={[
         { label: 'Материалы', path: ROUTES.MATERIALS },
         { label: currentMaterial.name }
@@ -97,46 +98,45 @@ export const MaterialDetailPage = () => {
         <div className="row">
           <div className="col-md-6 mb-4">
             <div className="material-image-wrapper">
-              <img 
+              <img
                 src={currentMaterial.image_url}
                 alt={currentMaterial.name}
-                className="material-detail-image"
-              />
+                className="material-detail-image" />
             </div>
           </div>
-          
+
           <div className="col-md-6">
             <div className="material-info">
               <h1 className="material-title">{currentMaterial.name}</h1>
               <p className="material-description">{currentMaterial.description}</p>
-              
+
               <div className="material-properties-detail">
                 <h3 className="properties-title">Характеристики</h3>
-                
+
                 <div className="property-detail">
                   <span className="property-label">Цена за м²:</span>
                   <span className="property-value price-value">
                     {currentMaterial.price_per_m2} руб
                   </span>
                 </div>
-                
+
                 <div className="property-detail">
                   <span className="property-label">Коэффициент теплопроводности (λ):</span>
                   <span className="property-value">{currentMaterial.lambda} Вт/(м·K)</span>
                 </div>
-                
+
                 <div className="property-detail">
                   <span className="property-label">Толщина:</span>
                   <span className="property-value">{currentMaterial.thickness} м</span>
                 </div>
-                
+
                 <div className="property-detail">
                   <span className="property-label">Статус:</span>
                   <span className="property-value status-value">
                     {currentMaterial.status === 'действует' ? 'Доступен' : 'Недоступен'}
                   </span>
                 </div>
-                
+
                 <div className="property-detail">
                   <span className="property-label">Добавлен:</span>
                   <span className="property-value">
@@ -144,7 +144,7 @@ export const MaterialDetailPage = () => {
                   </span>
                 </div>
               </div>
-              
+
               {user && (
                 <div className="mt-4">
                   <div className="mb-3">
@@ -155,10 +155,9 @@ export const MaterialDetailPage = () => {
                       value={area}
                       onChange={(e) => setArea(parseFloat(e.target.value) || 0)}
                       min="0.1"
-                      step="0.1"
-                    />
+                      step="0.1" />
                   </div>
-                  <button 
+                  <button
                     className="btn btn-warning w-100"
                     onClick={handleAddToCart}
                   >
@@ -171,5 +170,9 @@ export const MaterialDetailPage = () => {
         </div>
       </div>
     </div>
+    <div>
+        <RecentlyViewedMaterials />
+      </div></>
+    
   );
 };

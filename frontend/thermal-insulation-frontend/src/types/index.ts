@@ -63,4 +63,5 @@ export type MaterialsFilter = {
   minPrice?: number;
   maxPrice?: number;
   status?: string;
+  recent?: boolean;
 };

@@ -19,8 +19,14 @@ export const materialsApi = {
       
       const params = new URLSearchParams();
       if (filters?.search) params.append('filter', filters.search);
-      
-      const response = await fetch(`${API_BASE}/materials?${params}`);
+      if (filters?.recent) params.append('recent', 'true');
+
+      const response = await fetch(`${API_BASE}/materials?${params}`, {
+        credentials: 'include', // ВАЖНО: для отправки кук
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
       
       console.log('📨 Response status:', response.status);
       console.log('📨 Response URL:', response.url);
@@ -96,6 +102,10 @@ export const materialsApi = {
         );
       }
       
+      if (filters?.recent) {
+        return [];
+      }
+
       return filtered;
     }
   },
@@ -162,6 +172,8 @@ export const materialsApi = {
       
       if (!material) throw new Error('Material not found');
       
+
+
       // Для mock данных используем изображения из public папки
       return {
         ...material,

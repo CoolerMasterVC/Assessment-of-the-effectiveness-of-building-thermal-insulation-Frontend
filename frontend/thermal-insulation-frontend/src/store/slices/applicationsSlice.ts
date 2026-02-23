@@ -167,6 +167,21 @@ export const updateApplicationMaterial = createAsyncThunk(
   }
 );
 
+export const completeApplicationAsync = createAsyncThunk(
+  'applications/completeAsync',
+  async (id: number) => {
+    // Этот endpoint должен быть на бэкенде: PUT /api/mat_applics/{id}/complete-async
+    const response = await httpClient.request<any, any>({
+      path: `/api/mat_applics/${id}/complete-async`,
+      method: 'PUT',
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+    });
+    return response; // { status: "processing", message: "..." }
+  }
+);
+
 const applicationsSlice = createSlice({
   name: 'applications',
   initialState,

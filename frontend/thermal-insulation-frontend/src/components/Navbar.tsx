@@ -5,13 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store';
 import { logoutUser } from '../store/slices/authSlice';
 import { clearMaterials } from '../store/slices/materialsSlice';
-import { clearCart } from '../store/slices/cartSlice';
 
 export const AppNavbar: FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.auth);
-  const { itemsCount } = useAppSelector((state) => state.cart);
+  useAppSelector((state) => state.cart);
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
@@ -22,16 +21,10 @@ export const AppNavbar: FC = () => {
   return (
     <Navbar bg="warning" expand="lg" className="border-bottom">
       <Container>
-        <Navbar.Brand className="fw-bold text-dark">
-          <img 
-            src="http://localhost:9000/images/home_icon.png" 
-            alt="Логотип" 
-            width="30" 
-            height="30" 
-            className="me-2"
-          />
-          Теплоизоляционные материалы
-        </Navbar.Brand>
+<Navbar.Brand className="fw-bold text-dark d-flex align-items-center" style={{ fontSize: 'clamp(1rem, 4vw, 1.5rem)' }}>
+  <img src={`http://localhost:9000/images/home_icon.png`} alt="Логотип" width="30" height="30" className="me-2" />
+  <span className="text-truncate" style={{ maxWidth: '200px' }}>Теплоизоляционные материалы</span>
+</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">

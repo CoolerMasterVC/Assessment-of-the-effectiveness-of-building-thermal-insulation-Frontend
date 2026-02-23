@@ -24,20 +24,31 @@ export const ProfilePage: FC = () => {
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError(null);
     setSuccess(false);
 
+    // Валидация пароля
+    if (password && password !== confirmPassword) {
+      setError('Пароли не совпадают');
+      return;
+    }
+
+    const updateData: any = {};
+    if (login !== currentUser?.login) updateData.login = login;
+    if (password) updateData.password = password;
+
+    if (Object.keys(updateData).length === 0) {
+      setError('Нет изменений для сохранения');
+      return;
+    }
+
+    setLoading(true);
     try {
-      const updateData: any = {};
-      if (login !== currentUser?.login) updateData.login = login;
-      if (password && password === confirmPassword) updateData.password = password;
-      
-      if (Object.keys(updateData).length > 0) {
-        const updatedUser = await userService.updateProfile(updateData);
-        dispatch(updateUserProfile(updatedUser));
-        setSuccess(true);
-      }
+      const updatedUser = await userService.updateProfile(updateData);
+      dispatch(updateUserProfile(updatedUser));
+      setSuccess(true);
+      setPassword('');
+      setConfirmPassword('');
     } catch (err: any) {
       setError(err.message || 'Ошибка обновления профиля');
     } finally {

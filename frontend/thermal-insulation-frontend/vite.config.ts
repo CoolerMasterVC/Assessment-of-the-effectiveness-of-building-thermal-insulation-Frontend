@@ -12,7 +12,7 @@ VitePWA({
   manifest: {
     name: 'Теплоизоляционные материалы',
     short_name: 'Теплоизоляция', 
-    start_url: '/',
+    start_url: '/Assessment-of-the-effectiveness-of-building-thermal-insulation-Frontend/',
     display: 'standalone',
     theme_color: '#ffc107',
     background_color: '#ffffff'
